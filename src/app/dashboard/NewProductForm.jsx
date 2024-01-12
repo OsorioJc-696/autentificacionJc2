@@ -1,6 +1,90 @@
-import React from 'react';
+import React, { useState }  from 'react';
 
-const NewProductForm = ({ addingProduct, newProductData, handleInputChangeProduct, handleSaveNewProduct, handleCancelProduct, handleAddProduct }) => {
+const NewProductForm = ({setProducts}) => {
+  const [addingProduct, setAddingProduct] = useState(false);
+  const [newProductData, setNewProductData] = useState({
+    id: '',
+    alto: '',
+    color: '',
+    eficienciaEnergetica: '',
+    fotografia: '',
+    garantia: '',
+    marca: '',
+    modelo: '',
+    peso: '',
+    profundidad: '',
+    voltaje: '',
+  });
+  
+  
+  const handleSaveNewProduct = () => {
+    fetch('http://localhost:8080/api/productos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newProductData),
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Nuevo producto agregado con éxito');
+        return response.json();
+      } else {
+        throw new Error('Error al agregar el nuevo producto');
+      }
+    })
+    .then(newProduct => {
+      setProducts(prevProducts => [...prevProducts, newProduct]);
+      setAddingProduct(false);
+      setNewProductData({
+        id: '',
+        alto: '',
+        ancho: '',
+        color: '',
+        voltaje: '',
+        fotografia: '',
+        garantia: '',
+        marca: '',
+        modelo: '',
+        profundidad: '',
+        eficienciaEnergetica: '',
+        peso: '',
+      });
+    })
+    .catch(error => {
+      console.error('Error al agregar el nuevo producto:', error);
+    });
+  };
+
+  const handleCancelProduct = () => {
+    setAddingProduct(false);
+    setNewProductData({
+      id: '',
+        alto: '',
+        ancho: '',
+        color: '',
+        voltaje: '',
+        fotografia: '',
+        garantia: '',
+        marca: '',
+        modelo: '',
+        profundidad: '',
+        eficienciaEnergetica: '',
+        peso: '',
+    });
+  };
+  const handleAddProduct = () => {
+    setAddingProduct(true);
+  };
+
+  const handleInputChangeProduct = (e, field) => {
+    const value = e.target.value;
+    setNewProductData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+  };
+  
   return (
     <div className="my-5">
       {addingProduct ? (
@@ -9,47 +93,49 @@ const NewProductForm = ({ addingProduct, newProductData, handleInputChangeProduc
             <h3 className="text-black text-xl mb-2">Agregar Nuevo Producto:</h3>
             {/* Agregar inputs según las propiedades del producto */}
             <input
-              type="text"
-              value={newProductData.nombre || ''}
-              onChange={(e) => handleInputChangeProduct(e, 'nombre')}
-              className="border p-2 mb-2"
-              placeholder="Nombre"
-            />
-            <input
                 type="text"
-                value={newProductData.descripcion || ''}
-                onChange={(e) => handleInputChangeProduct(e, 'descripcion')}
+                value={newProductData.alto || ''}
+                onChange={(e) => handleInputChangeProduct(e, 'alto')}
                 className="border p-2 mb-2"
-                placeholder="Descripcion"
+                placeholder="Alto"
                 />
             <input
                 type="text"
-                value={newProductData.precio || ''}
-                onChange={(e) => handleInputChangeProduct(e, 'precio')}
+                value={newProductData.ancho || ''}
+                onChange={(e) => handleInputChangeProduct(e, 'ancho')}
                 className="border p-2 mb-2"
-                placeholder="Precio"
-                />  
-            <input
-                type="text"
-                value={newProductData.cantidad || ''}
-                onChange={(e) => handleInputChangeProduct(e, 'cantidad')}
-                className="border p-2 mb-2"
-                placeholder="Cantidad"
+                placeholder="Ancho"
                 />
-            <input
+                <input
                 type="text"
-                value={newProductData.categoria || ''}
-                onChange={(e) => handleInputChangeProduct(e, 'categoria')}
+                value={newProductData.color || ''}
+                onChange={(e) => handleInputChangeProduct(e, 'color')}
                 className="border p-2 mb-2"
-                placeholder="Categoria"
+                placeholder="Color"
                 />
-            <input
+                <input
+  type="text"
+  value={newProductData.eficienciaEnergetica}
+  onChange={(e) => handleInputChangeProduct(e, 'eficienciaEnergetica')}
+  className="border p-2 mb-2"
+  placeholder="Eficiencia Energetica"
+/>
+
+                <input
                 type="text"
-                value={newProductData.imagen || ''}
-                onChange={(e) => handleInputChangeProduct(e, 'imagen')}
+                value={newProductData.fotografia || ''}
+                onChange={(e) => handleInputChangeProduct(e, 'fotografia')}
                 className="border p-2 mb-2"
-                placeholder="Imagen"
+                placeholder="Fotografia"
                 />
+                <input
+                type="text"
+                value={newProductData.garantia || ''}
+                onChange={(e) => handleInputChangeProduct(e, 'garantia')}
+                className="border p-2 mb-2"
+                placeholder="Garantia"
+                />
+                
             <input
                 type="text"
                 value={newProductData.marca || ''}
